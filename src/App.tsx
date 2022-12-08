@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 type Todo = {
   value: string;
+  readonly id: number;
 };
 
 export const App = () => {
@@ -9,11 +10,15 @@ export const App = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
 
   // 新しいTodoを作成
-  const handleOnSubmit = () => {
+  const handleOnSubmit = (
+    e: React.FormEvent<HTMLFormElement | HTMLInputElement>
+  ) => {
+    e.preventDefault();
     if (!text) return;
 
     const newTodo: Todo = {
       value: text,
+      id: new Date().getTime(),
     };
 
     setTodos([newTodo, ...todos]);
@@ -28,16 +33,19 @@ export const App = () => {
     <div>
       <form
         onSubmit={(e) => {
-          e.preventDefault(); // <form> タグの中でいったん e.preventDefault() しているのは Enter キー打鍵でページそのものがリロードされてしまうのを防ぐため
-          handleOnSubmit();
+          handleOnSubmit(e);
         }}
       >
-        <input type="text" value={text} onChange={(e) => handleOnChange(e)} />
+        <input
+          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
         <input type="submit" value="Add" onSubmit={handleOnSubmit} />
       </form>
       <ul>
         {todos.map((todo) => {
-          return <li>{todo.value}</li>
+          return <li key={todo.id}>{todo.value}</li>;
         })}
       </ul>
     </div>
