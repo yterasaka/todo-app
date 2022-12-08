@@ -35,6 +35,11 @@ export const App = () => {
         <input type="text" value={text} onChange={(e) => handleOnChange(e)} />
         <input type="submit" value="Add" onSubmit={handleOnSubmit} />
       </form>
+      <ul>
+        {todos.map((todo) => {
+          return <li>{todo.value}</li>
+        })}
+      </ul>
     </div>
   );
 };
