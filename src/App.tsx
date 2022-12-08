@@ -29,6 +29,20 @@ export const App = () => {
     setText(e.target.value);
   };
 
+  const handleOnEdit = (id: number, value: string) => {
+    const newTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        todo.value = value;
+      }
+      return todo;
+    });
+
+    console.log("=== Original todos ===");
+    todos.map((todo) => console.log(`id: ${todo.id}, value: ${todo.value}`));
+    
+    setTodos(newTodos);
+  };
+
   return (
     <div>
       <form
@@ -36,16 +50,20 @@ export const App = () => {
           handleOnSubmit(e);
         }}
       >
-        <input
-          type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        />
+        <input type="text" value={text} onChange={(e) => handleOnChange(e)} />
         <input type="submit" value="Add" onSubmit={handleOnSubmit} />
       </form>
       <ul>
         {todos.map((todo) => {
-          return <li key={todo.id}>{todo.value}</li>;
+          return (
+            <li key={todo.id}>
+              <input
+                type="text"
+                value={todo.value}
+                onChange={(e) => handleOnEdit(todo.id, e.target.value)}
+              />
+            </li>
+          );
         })}
       </ul>
     </div>
