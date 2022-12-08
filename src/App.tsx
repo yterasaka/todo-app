@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 type Todo = {
   value: string;
@@ -9,11 +9,12 @@ export const App = () => {
   const [text, setText] = useState("");
   const [todos, setTodos] = useState<Todo[]>([]);
 
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
+  };
+
   // 新しいTodoを作成
-  const handleOnSubmit = (
-    e: React.FormEvent<HTMLFormElement | HTMLInputElement>
-  ) => {
-    e.preventDefault();
+  const handleOnSubmit = () => {
     if (!text) return;
 
     const newTodo: Todo = {
@@ -25,12 +26,11 @@ export const App = () => {
     setText("");
   };
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
-  };
-
+  // Todoを編集
   const handleOnEdit = (id: number, value: string) => {
-    const newTodos = todos.map((todo) => {
+    const deepCopy = todos.map((todo) => ({ ...todo }));
+
+    const newTodos = deepCopy.map((todo) => {
       if (todo.id === id) {
         todo.value = value;
       }
@@ -39,7 +39,7 @@ export const App = () => {
 
     console.log("=== Original todos ===");
     todos.map((todo) => console.log(`id: ${todo.id}, value: ${todo.value}`));
-    
+
     setTodos(newTodos);
   };
 
@@ -47,7 +47,8 @@ export const App = () => {
     <div>
       <form
         onSubmit={(e) => {
-          handleOnSubmit(e);
+          e.preventDefault();
+          handleOnSubmit();
         }}
       >
         <input type="text" value={text} onChange={(e) => handleOnChange(e)} />
