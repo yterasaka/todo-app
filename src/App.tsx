@@ -76,6 +76,11 @@ export const App = () => {
     setTodos(newTodos);
   };
 
+  const handleOnEmpty = () => {
+    const newTodos = todos.filter((todo) => !todo.removed);
+    setTodos(newTodos)
+  }
+
   const filteredTodos = todos.filter((todo) => {
     switch (filter) {
       case "all":
@@ -102,25 +107,32 @@ export const App = () => {
         <option value="unchecked">Current Todos</option>
         <option value="removed">Removed Todos</option>
       </select>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleOnSubmit();
-        }}
-      >
-        <input
-          type="text"
-          value={text}
-          disabled={filter === "checked" || filter === "removed"}
-          onChange={(e) => handleOnChange(e)}
-        />
-        <input
-          type="submit"
-          value="Add"
-          disabled={filter === "checked" || filter === "removed"}
-          onSubmit={handleOnSubmit}
-        />
-      </form>
+      {/* フィルターが 'removed' のときは 'Remove All' ボタンを表示 */}
+      {filter === "removed" ? (
+        <button onClick={handleOnEmpty} disabled={todos.filter((todo) => todo.removed).length === 0}>Remove All</button>
+      ) : (
+        // フィルターが 'checked' でなければ入力フォームを表示
+        filter !== "checked" && (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleOnSubmit();
+            }}
+          >
+            <input
+              type="text"
+              value={text}
+              onChange={(e) => handleOnChange(e)}
+            />
+            <input
+              type="submit"
+              value="Add"
+              onSubmit={handleOnSubmit}
+            />
+          </form>
+        )
+      )}
+
       <ul>
         {filteredTodos.map((todo) => {
           return (
