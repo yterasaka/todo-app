@@ -33,48 +33,54 @@ export const App = () => {
     setText("");
   };
 
-  // Todoを編集
-  const handleOnEdit = (id: number, value: string) => {
+  const handleOnTodo = <T extends Todo, U extends keyof Todo, V extends T[U]>(obj: T, key: U, value: V) => {
     const deepCopy = todos.map((todo) => ({ ...todo }));
-
     const newTodos = deepCopy.map((todo) => {
-      if (todo.id === id) {
-        todo.value = value;
+      if (todo.id === obj.id) {
+        todo[key] = value;
       }
       return todo;
-    });
+    })
+    setTodos(newTodos)
+  }
 
-    // console.log("=== Original todos ===");
-    // todos.map((todo) => console.log(`id: ${todo.id}, value: ${todo.value}`));
+  // const handleOnEdit = (id: number, value: string) => {
+  //   const deepCopy = todos.map((todo) => ({ ...todo }));
 
-    setTodos(newTodos);
-  };
+  //   const newTodos = deepCopy.map((todo) => {
+  //     if (todo.id === id) {
+  //       todo.value = value;
+  //     }
+  //     return todo;
+  //   });
+  //   setTodos(newTodos);
+  // };
 
-  const handleOnCheck = (id: number, checked: boolean) => {
-    const deepCopy = todos.map((todo) => ({ ...todo }));
+  // const handleOnCheck = (id: number, checked: boolean) => {
+  //   const deepCopy = todos.map((todo) => ({ ...todo }));
 
-    const newTodos = deepCopy.map((todo) => {
-      if (todo.id === id) {
-        todo.checked = !checked;
-      }
-      return todo;
-    });
+  //   const newTodos = deepCopy.map((todo) => {
+  //     if (todo.id === id) {
+  //       todo.checked = !checked;
+  //     }
+  //     return todo;
+  //   });
 
-    setTodos(newTodos);
-  };
+  //   setTodos(newTodos);
+  // };
 
-  const handleOnRemove = (id: number, removed: boolean) => {
-    const deepCopy = todos.map((todo) => ({ ...todo }));
+    // const handleOnRemove = (id: number, removed: boolean) => {
+    //   const deepCopy = todos.map((todo) => ({ ...todo }));
 
-    const newTodos = deepCopy.map((todo) => {
-      if (todo.id === id) {
-        todo.removed = !removed;
-      }
-      return todo;
-    });
+    //   const newTodos = deepCopy.map((todo) => {
+    //     if (todo.id === id) {
+    //       todo.removed = !removed;
+    //     }
+    //     return todo;
+    //   });
 
-    setTodos(newTodos);
-  };
+    //   setTodos(newTodos);
+    // };
 
   const handleOnEmpty = () => {
     const newTodos = todos.filter((todo) => !todo.removed);
@@ -141,15 +147,15 @@ export const App = () => {
                 type="checkbox"
                 disabled={todo.removed}
                 checked={todo.checked}
-                onChange={() => handleOnCheck(todo.id, todo.checked)}
+                onChange={() => handleOnTodo(todo, 'checked', !todo.checked)}
               />
               <input
                 type="text"
                 disabled={todo.checked || todo.removed}
                 value={todo.value}
-                onChange={(e) => handleOnEdit(todo.id, e.target.value)}
+                onChange={(e) => handleOnTodo(todo, 'value', e.target.value)}
               />
-              <button onClick={() => handleOnRemove(todo.id, todo.removed)}>
+              <button onClick={() => handleOnTodo(todo, 'removed', !todo.removed)}>
                 {todo.removed ? "Restore" : "Remove"}
               </button>
             </li>
